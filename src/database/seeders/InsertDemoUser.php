@@ -12,8 +12,8 @@ class InsertDemoUser extends Seeder
         User::factory()->create([
             'name' => 'Demo User',
             'email' => 'demo@example.com',
-            'user_name' => 'demouser',
-            'password' => bcrypt('bzaBWC54!@#$')
+            'username' => 'demouser',
+            'password' => bcrypt(env('SAMPLE_USER_PASSWORD', 'Password123!')),
         ]);
     }
 }
