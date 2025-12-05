@@ -1,6 +1,7 @@
 <?php
+declare(strict_types=1);
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth\API;
 
 use App\Http\Controllers\Auth\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
@@ -30,14 +31,14 @@ class AuthController extends Controller
                     'email' => $validatedData['username'],
                     'password' => $validatedData['password']
                 ];
-
+                
                 if (!$token = JWTAuth::attempt($emailCredentials)) {
-                    return response()->json(['error' => 'Invalid credentials'], 401);
+                    return response()->json(['error' => __('Invalid credentials')], 401);
                 }
             }
-
-            // Get the authenticated user - token is already properly created by JWTAuth::attempt()
+            
             $user = JWTAuth::user();
+            // Get the authenticated user - token is already properly created by JWTAuth::attempt()
         } catch (ValidationException $e) {
             Log::error(
                 'Validation error during login',
@@ -55,7 +56,7 @@ class AuthController extends Controller
                     "trace" => $e->getTraceAsString()
                 ]
             );
-            return response()->json(['error' => 'Could not create token'], 500);
+            return response()->json(['error' => __('Could not create token')], 500);
         } catch (\Throwable $e) {
             Log::error(
                 'General error during login',
@@ -64,12 +65,13 @@ class AuthController extends Controller
                     "trace" => $e->getTraceAsString()
                 ]
             );
-            return response()->json(['error' => 'An error occurred during login'], 500);
+            return response()->json(['error' => __('An error occurred during login')], 500);
         }
 
         return response()->json([
             'expired_at' => now()->addMinutes(config('jwt.ttl'))->format('Y-m-d H:i:s'),
             'token' => $token,
+            'user' => $user,
             'type' => 'Bearer'
         ], 200);
     }
@@ -79,7 +81,7 @@ class AuthController extends Controller
     {
         try {
             JWTAuth::invalidate(JWTAuth::getToken());
-            return response()->json(['message' => 'User logged out successfully'], 200);
+            return response()->json(['message' => __('User logged out successfully')], 200);
         } catch (JWTException $e) {
             Log::error(
                 'JWT error during logout',
@@ -88,7 +90,7 @@ class AuthController extends Controller
                     "trace" => $e->getTraceAsString()
                 ]
             );
-            return response()->json(['error' => 'Could not invalidate token'], 500);
+            return response()->json(['error' => __('Could not invalidate token')], 500);
         } catch (\Throwable $e) {
             Log::error(
                 'Could not invalidate token during logout',
@@ -97,7 +99,7 @@ class AuthController extends Controller
                     "trace" => $e->getTraceAsString()
                 ]
             );
-            return response()->json(['error' => 'An error occurred during logout'], 500);
+            return response()->json(['error' => __('An error occurred during logout')], 500);
         }
     }
 
@@ -115,7 +117,7 @@ class AuthController extends Controller
                     "trace" => $e->getTraceAsString()
                 ]
             );
-            return response()->json(['error' => 'Could not fetch user'], 500);
+            return response()->json(['error' => __('Could not fetch user')], 500);
         }
     }
 }
