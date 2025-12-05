@@ -122,8 +122,8 @@ ENV COMPOSER_HTTP_TIMEOUT=600
 
 # Modify www-data user/group IDs before composer install
 RUN usermod -u ${UID} www-data && groupmod -g ${GID} www-data
-
 COPY ./src .
+RUN composer install --no-dev --optimize-autoloader --prefer-dist
 
 # Setup Laravel directories
 RUN mkdir -p \
