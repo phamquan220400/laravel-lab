@@ -123,7 +123,6 @@ ENV COMPOSER_HTTP_TIMEOUT=600
 # Modify www-data user/group IDs before composer install
 RUN usermod -u ${UID} www-data && groupmod -g ${GID} www-data
 COPY ./src .
-RUN composer install --no-dev --optimize-autoloader --prefer-dist
 
 # Setup Laravel directories
 RUN mkdir -p \
@@ -153,5 +152,5 @@ RUN chown -R www-data:www-data storage bootstrap/cache vendor && \
     find storage bootstrap/cache -type f -exec chmod 664 {} \;
 
 USER www-data:www-data
-CMD ["php-fpm"]
+CMD ["sh", "-c", "composer install --prefer-dist --no-progress --no-suggest && php-fpm"]
 EXPOSE 9000
