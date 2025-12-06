@@ -1,3 +1,6 @@
 .vscode/
 src/db_data/
 src/es_data/
+
+es_data
+db_data

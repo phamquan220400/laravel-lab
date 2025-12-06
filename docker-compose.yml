@@ -59,7 +59,7 @@ services:
       - "${DB_PORT:-3306}:3306"
     command: --default-authentication-plugin=mysql_native_password --log-bin-trust-function-creators=1
     volumes:
-      - ./src/db_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--password=123456"]
       interval: 10s
@@ -86,7 +86,7 @@ services:
       - "${ES_PORT:-9200}:9200"
     volumes:
       - ./infrastructure/docker/${TARGET_STAGE:-dev}/elasticsearch/elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml
-      - ./src/es_data:/usr/share/elasticsearch/data
+      - es_data:/usr/share/elasticsearch/data
     healthcheck:
       test: ["CMD-SHELL", "curl -fsSL http://localhost:9200/_cluster/health || exit 1"]
       interval: 10s
@@ -97,6 +97,7 @@ services:
 volumes:
   db_data:
   es_data:
+    driver: local
 networks:
   portfolio:
     driver: bridge
